@@ -1,0 +1,16 @@
+﻿(function ($, window, document) {
+    $(function () {
+        RegisterNavSearchBoxFormSubmit();
+    });
+
+    function RegisterNavSearchBoxFormSubmit() {
+        $('.js-nav-search-form').on('submit', function (event) {
+            event.preventDefault();
+
+            var query = $(this).find('.js-nav-search-field').val();
+            var qs = '?q=' + query;
+
+            window.location.href = window.location.protocol + "//" + window.location.host + '/search' + qs;
+        });
+    };
+}(window.jQuery, window, document));

@@ -1,0 +1,103 @@
+html, body {
+	width: 100%;
+	height: 100%;
+}
+
+/* Header Style */
+.header-wrapper {
+	width: 100%;
+	position: fixed;
+	background-color: white;
+	z-index: 10000000;
+}
+.navigation{
+	float: right;
+	margin-top: 30px;
+}
+.nav-li {
+	display: inline-block;
+}
+.nav-li a {
+	font-size: 30px;
+	color: #17475f;
+	margin-right: 50px;
+	font-weight: 900;
+	text-transform: capitalize;
+}
+.logo {
+	margin-top: 15px;
+	margin-left: 10px;
+	height: 44px;
+	float: left;
+}
+header::after {
+	content: '';
+	clear: both;
+	display: block;
+}
+.childcarediv {
+    width: 100%;
+    margin: auto;
+    position: relative;
+}
+.childcare {
+	margin-top: 60px;
+    width: 100%;
+}
+.childcaretxt1 {
+	position: absolute;
+	bottom: 90px;
+	left: 60px;
+	font-size: 40px;
+	font-weight: 500;
+    color: #fff;
+}
+.childcaretxt2 {
+	position: absolute;
+	bottom: 50px;
+	left: 60px;
+    color: #fff;
+    font-size: 50px;
+    font-weight: 900;
+}
+.middlediv {
+	width: 100%;
+	background-color: #fff;
+	margin: auto;
+	position: relative;
+}
+.middletxt {
+	position: absolute;
+    top: 30px;
+    left: 70px;
+    font-size: 30px;
+    font-weight: 900;
+    text-transform: uppercase;
+    color: #17475f;
+}
+.middletxt1 {
+	position: absolute;
+	top: 30px;
+	right: 50px;
+	font-size: 20px;
+
+}
+.findcenter {
+	position: absolute;
+	background-color: #f1bd19;
+	width: 180px;
+	height: 50px;
+	color: #fff;
+	top: 70px;
+	right: 150px;
+	text-align: center;
+    padding-top: 20px;
+    color: white;
+}
+
+/*.findcenter a {
+	position: absolute;
+	top: 70px;
+	right: 1500px;
+
+}*/

@@ -1,0 +1,55 @@
+
+function piResponse() {
+		piSetCookie('visitor_id77712', '547532226', 3650);
+			piSetCookie('visitor_id77712-hash', '890ddc3b69a5a92a30508ff526d999efb2bfdcf172474c2d90818c75ab2882ac88b44941f5ad31a21c72bffd6cd674c2c9c5baf8', 3650);
+		
+		if (document.location.protocol != "https:" || (document.location.protocol == "https:" && true)) {
+		var analytics_link = document.location.protocol + "//" + "go.brighthorizons.com/analytics?";
+		pi.tracker.visitor_id='547532226';
+
+				pi.tracker.visitor_id_sign='890ddc3b69a5a92a30508ff526d999efb2bfdcf172474c2d90818c75ab2882ac88b44941f5ad31a21c72bffd6cd674c2c9c5baf8';
+		
+				pi.tracker.campaign_id='34755';
+		
+		var variables = 'conly=true';
+		for (property in pi.tracker) {
+					variables += "&" + property + "=" + encodeURIComponent(pi.tracker[property]);
+				}
+		var headID = document.getElementsByTagName("head")[0];
+		piScriptObj[piScriptNum] = document.createElement('script');
+		piScriptObj[piScriptNum].type = 'text/javascript';
+		piScriptObj[piScriptNum].src = analytics_link + variables;
+		headID.appendChild(piScriptObj[piScriptNum]);
+		piScriptObj[piScriptNum].onload = function() { return; }
+	}
+	
+		// Get script name
+	const pdjsScriptName = typeof window.getPardotUrl === 'function' ? 'pd.js' : 'pi.js';
+
+		// Cache buster
+	if (typeof piVersion === 'undefined' || piVersion !== '1.0.0') {
+		// Get script domain
+		const pdjsDomain = (document.location.protocol === 'https:') ? 'https://pi.pardot.com' : 'http://cdn.pardot.com';
+
+		// Create iframe
+		const pdjsIframe = document.createElement('iframe');
+		pdjsIframe.name = pdjsIframe.id = 'ifr_' + Date.now();
+		pdjsIframe.width = pdjsIframe.height = 0;
+		document.body.appendChild(pdjsIframe);
+
+		// Create form
+		const pdjsForm = document.createElement('form');
+		pdjsForm.method = "POST";
+		pdjsForm.target = pdjsIframe.name;
+		pdjsForm.action = pdjsDomain + '/' + pdjsScriptName;
+		document.body.appendChild(pdjsForm);
+
+		// Request script
+		pdjsForm.submit();
+	}
+	}
+piResponse();
+
+
+
+

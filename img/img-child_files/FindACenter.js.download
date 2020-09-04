@@ -1,0 +1,251 @@
+﻿(function ($, window, document) {
+    var isMapPage = $('#map').length;
+    var zipCodeQueryStringTitle = 'zipCode';
+    var radiusQueryStringTitle = 'radius';
+    var userIp = '';
+
+    $(function () {
+        SidebarSubmitZipCode();
+        FindACenterSubmit();
+        BackToResultsClick();
+        ScheduleVisitClick();
+        SubmitLeadFormClick();
+        RegisterModalCtaClick();
+
+        if ($.isFunction(getParameterByName)) {
+            var step = getParameterByName('step');
+            if (step === 'scheduleVisit' || step === 'confirmVisit') {
+                // Hide things depending on step.
+                $('.js-step-hidden').hide();
+            } else {
+                // Update selected radius based on query string.
+                var radius = getParameterByName(radiusQueryStringTitle);
+                var radiusDropdown = $('.js-map-radius-select');
+                if (radius !== null && radius !== undefined && radius.length > 0 && radiusDropdown !== undefined
+                    && radiusDropdown !== null && radiusDropdown.length > 0) {
+                    radiusDropdown.find('option[value="' + radius + '"]').prop('selected', 'selected');
+                }
+            }
+        }
+
+        // Set zip code in box.
+        var zip = getParameterByName(zipCodeQueryStringTitle);
+        if (zip !== null && zip !== undefined && zip.length > 0) {
+            $('#zip-sidebar-input').val(zip);
+        }
+
+        if (isMapPage && (zip === null || zip === undefined || zip.length < 1)) {
+            $.getJSON("https://api.ipify.org?format=jsonp&callback=?",
+                function (json) {
+                    console.log("My public IP address is: " + json.ip);
+                    console.log('Is cookie there? ' + document.cookie.indexOf('publicip='));
+
+                    if (document.cookie.indexOf('publicip=') === -1) {
+                        // Set ip cookie
+                        document.cookie = "publicip=" + json.ip;
+                        window.location.href = window.location.href;
+                    }
+                }
+            );
+        }
+
+        // This is for the modal. Which means it can be run on every page. TODO: Reuse getJSON call to ipify API.
+        $.getJSON("https://api.ipify.org?format=jsonp&callback=?",
+            function (json) {
+
+                userIp = json.ip;
+                console.log("My public IP address is: " + json.ip);
+            }
+        );
+    });
+
+    function RegisterModalCtaClick() {
+        $('a[data-target="#find-a-center-modal"]').on('click', function () {
+            var divToInsertInto = $('#locationsNearYou');
+
+            $.ajax({
+                type: 'GET',
+                url: '/corpapi/FindACenter/GetLocationsNearYou',
+                cache: false,
+                data: { ip: userIp },
+                success: function (data) {
+                    // Assuming new EmptyResult(); means length would be zero.
+                    if (data.length > 0) {
+                        // Set contents of div to partial view contents (centers)
+                        divToInsertInto.html(data);
+                        // Register click event now that the element is in the dom
+                        ScheduleVisitClick();
+                    }
+                }
+            });
+        });
+    }
+
+    function FindACenterSubmit() {
+        $('#findCenters').on('submit', function (event) {
+            event.preventDefault();
+
+            var zip = $('#zip-modal-input').val();
+            var radius = $('#job-categories').find(':selected').val();
+            var qs = '?zipCode=' + zip + '&radius=' + radius;
+            var locatorUrl = $('#LocatorUrl').val();
+
+            window.location.href = window.location.protocol + "//" + window.location.host + locatorUrl + qs;
+        });
+    };
+
+    function SidebarSubmitZipCode() {
+        $('#zip-sidebar-input').on('keypress', function (e) {
+            // User presses Enter key
+            if (e.which === 13) {
+                e.preventDefault();
+
+                var qs = '';
+                var zip = $('#zip-sidebar-input').val();
+                if (zip.length < 1) {
+                    zip = $('#displayedZip').text();
+                }
+                var radiusSelected = $('.js-map-radius-select').find(':selected').val() | "10";
+                var currentHref = window.location.href;
+
+                // Results page. Remove center and step query strings
+                if (currentHref.indexOf('step=') > -1) {
+                    currentHref = removeURLParameter(currentHref, 'step');
+                }
+                if (currentHref.indexOf('center=') > -1) {
+                    currentHref = removeURLParameter(currentHref, 'center');
+                }
+
+                // Remove zipCode
+                if (currentHref.indexOf('zipCode=') > -1) {
+                    currentHref = removeURLParameter(currentHref, 'zipCode');
+                }
+
+                // Add zipCode
+                if (zip !== null && zip !== undefined && zip.length > 0) {
+                    currentHref += (currentHref.indexOf('?') === -1 ? '?' : '&') + zipCodeQueryStringTitle + '=' + zip;
+                }
+
+                // Remove radius
+                if (currentHref.indexOf('radius=') > -1) {
+                    currentHref = removeURLParameter(currentHref, 'radius');
+                }
+
+                // Add radius
+                if (radiusSelected !== null && radiusSelected !== undefined && radiusSelected.toString().length > 0) {
+                    currentHref += (currentHref.indexOf('?') === -1 ? '?' : '&') + radiusQueryStringTitle + '=' + radiusSelected;
+                }
+
+                window.location.href = currentHref;
+            }
+        });
+    };
+
+    function BackToResultsClick() {
+        $('#backToResults').on('click', function (e) {
+            var currentHref = updateQueryStrings('', '', '');
+            window.location.href = currentHref;
+        });
+    };
+
+    function ScheduleVisitClick() {
+        $('.js-schedule-visit').on('click', function () {
+            var centerNumber = $(this).closest('div.school-location-card').find('.js-center-number').val();
+            var facPageUrl = $('#findACenterUrl').val();
+            var newHref = updateQueryStrings(centerNumber, 'scheduleVisit', facPageUrl);
+
+            window.location.href = newHref;
+        });
+    };
+
+    function updateQueryStrings(centerNumber, step, facPageUrl) {
+        var currentHref = '';
+
+        // We need to use the FAC page url for the FAC modal. Otherwise the schedule visit link will be the current page.
+        if (facPageUrl.length > 0) {
+            currentHref = window.location.protocol + "//" + window.location.host + facPageUrl + window.location.search;
+        } else {
+            currentHref = window.location.href;
+        }
+
+        // First remove center and step query string parameters if they exist
+        var newHref = removeURLParameter(currentHref, 'center');
+        newHref = removeURLParameter(newHref, 'step');
+
+        var centerIdQs = '';
+        if (centerNumber.length > 0) {
+            centerIdQs = 'center=' + centerNumber;
+        }
+        var stepQs = '';
+        if (step.length > 0) {
+            stepQs = 'step=' + step;
+        }
+
+        if (centerIdQs.length > 0 && stepQs.length > 0) {
+            newHref += (newHref.indexOf('?') === -1 ? '?' : '&') + centerIdQs + '&' + stepQs;
+        }
+
+        return newHref;
+    }
+
+    function SubmitLeadFormClick() {
+        $('#imsLeadForm').on('submit', function (event) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+
+            if ($(this).find('.js-form-group').hasClass('has-error') || $(this).find('.js-submit-schedule-visit').hasClass('disabled') === true) {
+                return false;
+            }
+
+            var selectedDate = $('#select-day').find(':selected').val() + ' ' + $('#select-month').find(':selected').text();
+            var selectedTime = $('#select-time').find(':selected').text();
+            var firstName = $('#first-name-input').val();
+            var lastName = $('#last-name-input').val();
+            var email = $('#email-input').val();
+            var phone = $('#phone-input').val();
+            var startOption = $('#select-start-option').not(':disabled').find(':selected').text();
+            var centerNumber = $('.map-sidebar-container').find('.js-center-number').val();
+            var worksWith = $('#worksWithContCtr').val();
+            var zipCodeEntered = $('#userZip').val(); // This would be either the geolocated zip or the zip entered into the search box
+            var urgency = $('#select-start-option').not(':disabled').find(':selected').val();
+            var utmCampaign = getParameterByName('utm_campaign');
+
+            // Get child DOBs
+            var dobs = [];
+            var formGroupParent = $('.js-form-group-birthday');
+            formGroupParent.children('.js-birthday-input-field-wrap').each(function () {
+                var day = $(this).find('input[id*="-day"]').val();
+                var month = $(this).find('input[id*="-month"]').val();
+                var year = $(this).find('input[id*="-year"]').val();
+                var compundDate = month + '/' + day + '/' + year;
+                dobs.push(compundDate);
+            });
+
+            $.ajax({
+                type: 'POST',
+                url: 'corpapi/FindACenter/SubmitScheduleVisit',
+                cache: false,
+                data: {
+                    centerNumber: centerNumber, selectedDate: selectedDate, selectedTime: selectedTime, firstName: firstName,
+                    lastName: lastName, emailAddress: email, phoneNumber: phone, whenToStart: startOption, childDatesOfBirth: dobs,
+                    worksWithContCtr: worksWith, userZip: zipCodeEntered, urgency: urgency, utm: utmCampaign
+                },
+                success: function (data) {
+                    if (data.success) {
+                        // Update query string and cause page reload
+                        var newHref = updateQueryStrings(centerNumber, 'confirmVisit', '');
+
+                        // Event snippet for IMS Thank you conversion page
+                        gtag('event', 'conversion', {
+                            'send_to': 'AW-1038872000/Jqx6CKzehwMQwNuv7wM',
+                            'value': 1.0,
+                            'currency': 'USD'
+                        });
+
+                        window.location.href = newHref;
+                    }
+                }
+            });
+        });
+    }
+}(window.jQuery, window, document));
