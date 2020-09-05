@@ -40,9 +40,12 @@ header::after {
     margin: auto;
     position: relative;
 }
-.childcare {
-	margin-top: 60px;
-    width: 100%;
+.childcare-img {
+	background-image: url('https://www.brighthorizons.com/-/media/BH-New/Health-Safety-Updated/623Update/HOME-Hero-mobile.ashx');
+	height: 750px;
+	background-size: cover;
+	background-position: center;
+  	background-repeat: no-repeat;
 }
 .childcaretxt1 {
 	position: absolute;
@@ -87,17 +90,18 @@ header::after {
 	background-color: #f1bd19;
 	width: 180px;
 	height: 50px;
-	color: #fff;
 	top: 70px;
 	right: 150px;
 	text-align: center;
     padding-top: 20px;
-    color: white;
+    border-radius: 15px;
+}
+.findcenter a {
+	color: #17475f;
+}
+.findcenter:hover {
+	cursor: pointer;
+	background-color: #fff;
+	border: 2px solid #f1bd19;
 }
 
-/*.findcenter a {
-	position: absolute;
-	top: 70px;
-	right: 1500px;
-
-}*/
