@@ -1,39 +1,107 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8">
+	<meta charset="UTF-8">
+	<meta name="description" content="childcare">
+	<meta name="keywords" content="childcare,children,kids">
+	<meta name="author" content="Tea Kritchashvili">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title> Welcome to Bright Horizons </title>
+	
 	<link rel="stylesheet" type="text/css" href="css/reset.css">
-	<link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+	
+    
 </head>
 <body>
-	<header class="header-wrapper">
-		<a href="https://www.brighthorizons.com/"> <img src="https://www.brighthorizons.com/-/media/Images/Placeholder/Logos/logo-bh-stacked-v2.ashx" alt="logo" class="logo"> </a>
-		<nav class="navigation">
-			<ul>
-				<li class="nav-li">
-					<a href="#"> Our Solutions </a>
-				</li>
-				<li class="nav-li">
-					<a href="#"> who we are </a>
-				</li>
-				<li class="nav-li">
-					<a href="#"> for students </a>
-				</li>
-			</ul>
-		</nav>
+	<header>
+		<div class=header-wrapper>
+		
+			<a href="https://www.brighthorizons.com/"> <img src="img/logo.svg" alt="logo" class="logo"> </a>
+			<div>
+				<div class="contact"><a href="contact.html">contact</a></div>
+				<i class="fas fa-bars"></i>
+			</div>
+			<!-- <nav class="navigation">
+				
+				
+				<ul class="nav-ul">
+					
+					<li class="nav-li">
+						<a href="#"> Our Solutions </a>
+					</li>
+					<li class="nav-li">
+						<a href="#"> who we are </a>
+					</li>
+					<li class="nav-li">
+						<a href="#"> for students </a>
+					</li>
+				</ul>
+			</nav> -->
+		
+		</div>
 	</header>
+	<div class="empty"></div>
 	<div class="childcarediv">
-		<div class="childcare-img"> </div>
-		<h3 class="childcaretxt1"> GROW WITH US  </h3>
-		<h2 class="childcaretxt2"> <strong> WE’RE OPEN AND ENROLLING </strong> </h2>
+		<div class="carousel">
+			<div class="banner mySlides fade"> 
+				<img src="img/banner.jpg">
+			</div>
+			<div class="man-child-img mySlides fade">
+				<img src="img/man-child-img.jpg">
+			</div>
+			<div class="woman-child-img mySlides fade">
+				<img src="img/woman-child-img.jpg">
+			</div>	
+				<div style="text-align:center">
+					<span class="dot"></span> 
+					<span class="dot"></span> 
+					<span class="dot"></span> 
+				</div>	
+		</div>
+		<div class="childcarediv-links">
+			<h2>CHILDREN & FAMILIES <strong>THRIVE HERE</strong></h2>
+			
+					<div class="button-info" href="#" target="_blank"><p><i class="fas fa-map-marker-alt location-img"></i>Find childcare</p></div>
+			
+					<div class="button-info" href="#" target="_blank"><p><i class="fas fa-map-marker-alt"></i>Access My Employee Benefits</p></div>
+			
+					<div class="button-info" href="#" target="_blank"><p><i class="fas fa-map-marker-alt"></i>Learn About Careers</p></div>
+			
+					<div class="button-info" href="#" target="_blank"><p><i class="fas fa-map-marker-alt"></i>Provide Employer Benefit</p></div>
+				
+		</div>
+		
 	</div>
 	<div class="middlediv">
-		<h4 class="middletxt"> Find the right <br> program for you </h4>
-		<h6 class="middletxt1"> Search by zip code to look for a center near you </h6>
-		<div class="findcenter">
-			<a href="#"> FIND A CENTER </a>
+	
 		</div>
 	</div>
+	
+	<script>
+	var slideIndex = 0;
+	showSlides();
+		function showSlides() {
+				var i;
+				var slides = document.getElementsByClassName("mySlides");
+				var dots = document.getElementsByClassName("dot");
+				for (i = 0; i < slides.length; i++) {
+				slides[i].style.display = "none";  
+				}
+				slideIndex++;
+				if (slideIndex > slides.length) {slideIndex = 1}    
+				for (i = 0; i < dots.length; i++) {
+				dots[i].className = dots[i].className.replace(" active", "");
+				}
+				slides[slideIndex-1].style.display = "block";  
+				dots[slideIndex-1].className += " active";
+				setTimeout(showSlides, 3000); // Change image every 2 seconds
+			}
+			
+	</script>
+
+			
 </body>
 </html>
